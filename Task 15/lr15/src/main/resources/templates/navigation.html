@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<!---->bg-secondary, bg-success, bg-danger
+<div class="fluid-container" th:fragment="navi(activeTab)">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-success ">
+        <a class="navbar-brand" th:href="@{/}">ООО "Сладкая Булочка"</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">Главная страница<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+<!--                    th:classappend="${activeTab == 'Dish' ? 'active' : ''}">-->
+                    <a class="nav-link" th:href="@{/dishs/addOrUpdate/add}">Добавить блюдо</a>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="nav-item">
+                    <a class="nav-link" style="color: white" th:text="${@userService.getRealNameByUsername(#authentication.name)}"></a>
+                </li>
+
+                <li sec:authorize="isAuthenticated()" class="nav-item">
+                    <form th:action="@{/logout}" method="POST">
+                        <button class="btn btn-danger" style="margin-left: 10px" type="submit">Выйти</button>
+                    </form>
+                </li>
+                <li sec:authorize="isAnonymous()" class="nav-item" style="margin-left: 15px">
+                    <form class="align-middle" th:action="@{/authenticateTheUser}" method="POST">
+                        <div class="input-group-prepend" style="margin-left: 10px">
+                            <input class="form-control" type="text" placeholder="Логин" name="username"
+                                   aria-describedby="inputGroup-sizing-sm">
+                            <input class="form-control" type="password" style="margin-left: 20px" placeholder="Пароль" name="password"
+                                   aria-describedby="inputGroup-sizing-sm">
+                            <button class="btn btn-primary btn-sm" style="margin-left: 15px" type="submit">Войти</button>
+                        </div>
+                    </form>
+
+                </li>
+                <li sec:authorize="isAnonymous()" class="nav-item" style="margin-left: 15px">
+                    <span id="error-message" class="nav-link" >Для просмотра авторизуйтесь</span>
+                </li>
+                <li class="nav-item">
+                    <div class="col-xs-10">
+                        <div class="align-middle">
+                            <div th:if="${param.error} != null">
+                                <span class="align-middle"
+                                      style="color: red; background-color: #f8d7da;margin-left: 10px">Invalid username and password.</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="visible-md" style="height:80px;"></div>
+</div>
+</body>
+</html>

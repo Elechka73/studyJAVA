@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8"/>
+    <title>Список блюд</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body style="background-color: #FAEBD7;">
+<div th:replace="navigation :: navi('Home')"></div>
+<div style="margin-left: 50px;margin-right: 50px">
+    <table class="table table-hover" >
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название блюда</th>
+            <th>Ингредиенты</th>
+            <th>Белки</th>
+            <th>Жиры</th>
+            <th>Углеводы</th>
+            <th>Энергетическая ценность(ккал)</th>
+            <th sec:authorize="isAuthenticated()">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="dish : ${dishs}">
+            <td th:text="${dish.id}"/>
+            <td th:text="${dish.name}"/>
+            <td th:text="${dish.ingredients}"/>
+            <td th:text="${dish.proteins}"/>
+            <td th:text="${dish.fats}"></td>
+            <td th:text="${dish.carbohydrates}"></td>
+            <td th:text="${dish.energy_value}"></td>
+            <td sec:authorize="isAuthenticated()">
+                <a th:href="@{'/dishs/show/' + ${dish.id}}" th:text="Просмотреть"
+                   style= "color: #2E8B57"/>
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                   th:href="@{'/dishs/addOrUpdate/edit/' + ${dish.id}}" th:text="Редактировать"
+                   style="margin-left: 15px; color: #EE7942"/>
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                   th:href="@{'/dishs/delete/' + ${dish.id}}" th:text="Удалить" class="text-danger"
+                   style="margin-left: 15px"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation" th:if="${totalPages > 0}">
+        <ul class="pagination">
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a class="page-link" th:href="@{${filterUrl}(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+        </ul>
+    </nav>
+    <br>
+    <form th:action="@{/dishs/addOrUpdate/add}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <button type="submit" class="btn btn-info">Добавить блюдо</button>
+    </form>
+    <h3 style="margin-top: 0" >Отфильтровать</h3>
+    <form th:action="@{/dishs/filter}" method="get">
+        <div class="form-group">
+            <label for="name">Название блюда:</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Например: борщ" th:value="${name}">
+        </div>
+        <div class="form-group">
+            <label for="ingredients">Ингредиенты:</label>
+            <input type="text" class="form-control" id="ingredients" name="ingredients" placeholder="Например: рис" th:value="${ingredients}">
+        </div>
+        <div class="form-group">
+            <label for="energyfrom">Энергетическая ценность от: </label>
+            <input type="text" class="form-control" id="energyfrom" name="energyfrom" placeholder="Например: 200" th:value="${energyfrom}">
+        </div>
+        <div class="form-group">
+            <label for="energyto">Энергетическая ценность до: </label>
+            <input type="text" class="form-control" id="energyto" name="energyto" placeholder="Например: 500" th:value="${energyto}">
+        </div>
+        <button class="btn btn-dark" sec:authorize="isAnonymous()" disabled>Отфильтровать</button>
+        <button type="submit" class="btn btn-info" sec:authorize="isAuthenticated()">Отфильтровать</button>
+    </form>
+    <form th:action="@{/}">
+        <button style='margin-top: 10px' type="submit" class="btn btn-danger" sec:authorize="isAuthenticated()">Сбросить</button>
+        <button style='margin-top: 10px' sec:authorize="isAnonymous()" disabled class="btn btn-dark">Сбросить</button>
+    </form>
+    <br>
+    <h4 style="margin-top: 0; margin-bottom: -15px">Топ-3 по просмотрам</h4>
+    <ul th:if="${topDish != null}" style="list-style-type: none; padding: 0; margin-top: 20px;">
+        <li th:each="dish : ${topDish}" style="margin-top: 6px">
+            <span th:text="${dish.name}"></span>
+            <span th:text="' - ' + ${dish.views} + ' просмотр(ов)'"></span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
+
+<!--bg-primary: Синий (основной цвет по умолчанию).-->
+<!--bg-info: Голубой.-->
+<!--bg-warning: Желтый (предупреждение).-->
+<!--bg-dark: Темный серый.-->
+<!--bg-light: Светлый серый.-->

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Информация о медицинской организации</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body style="background-color: #FAEBD7;">
+<div th:replace="navigation :: navi('Home')"></div>
+<div class="container">
+  <table class="table">
+    <tbody>
+    <tr>
+      <th>ID</th>
+      <td th:text="${dish.id}"></td>
+    </tr>
+    <tr>
+      <th>Название блюда</th>
+      <td th:text="${dish.name}"></td>
+    </tr>
+    <tr>
+      <th>Ингредиенты</th>
+      <td th:text="${dish.ingredients}"></td>
+    </tr>
+    <tr>
+      <th>Белки</th>
+      <td th:text="${dish.proteins}"></td>
+    </tr>
+    <tr>
+      <th>Жиры</th>
+      <td th:text="${dish.fats}"></td>
+    </tr>
+    <tr>
+      <th>Углеводы</th>
+      <td th:text="${dish.carbohydrates}"></td>
+    </tr>
+    <tr>
+      <th>Энергетическая ценность на 100 грамм</th>
+      <td th:text="${dish.energy_value}"></td>
+    </tr>
+    </tbody>
+  </table>
+  <a th:href="${referer}" style='margin: 10px 0' class="btn btn-danger">Назад</a>
+</div>
+</body>
+</html>
